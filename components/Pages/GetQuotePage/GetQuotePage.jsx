@@ -10,12 +10,21 @@ import USP from "@/components/UI/USP/USP";
 import GetQuoteForm from "@/components/UI/Forms/GetQuoteForm";
 import HeroUSP from "@/components/UI/USP/HeroUSP";
 import Image from "next/image";
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+
 // const WebsitePriceCalculatorForm = dynamic(() =>
 //   import("@/components/UI/Forms/WebsitePriceCalculatorForm")
 // );
 
 export default function GetQuotePage({ data, websitePackageOffer, heroUSP }) {
   let graphicComponent = null;
+  const searchParams = useSearchParams();
+  const title = searchParams.get('title') || data.acf.hero_section.subtitle;
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
   // if (data.acf.hero_section.show_video) {
   //   if (data.acf.hero_section?.video_options === "enter_youtube_id") {
   //     if (data.acf.hero_section.youtube_id) {
@@ -39,7 +48,7 @@ export default function GetQuotePage({ data, websitePackageOffer, heroUSP }) {
         <Container maxWidth="lg" className="container">
           <div className="content-container">
             <Typography variant="h4" component="h1" className="subtitle">
-              {data.acf.hero_section.subtitle}
+              {title}
             </Typography>
             <Typography
               variant="body1"
