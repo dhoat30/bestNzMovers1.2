@@ -11,20 +11,40 @@ import GetQuoteForm from "@/components/UI/Forms/GetQuoteForm";
 import HeroUSP from "@/components/UI/USP/HeroUSP";
 import Image from "next/image";
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 // const WebsitePriceCalculatorForm = dynamic(() =>
 //   import("@/components/UI/Forms/WebsitePriceCalculatorForm")
 // );
+function isValidKeyword(input) {
+  if (!input) return false;
+
+  const trimmed = input.trim();
+  const wordCount = trimmed.split(/\s+/).length;
+
+  return (
+    /^[a-zA-Z0-9\s]+$/.test(trimmed) && // only letters, numbers, spaces
+    wordCount >= 2 &&
+    trimmed.length <= 40
+  );
+}
 
 export default function GetQuotePage({ data, websitePackageOffer, heroUSP }) {
   let graphicComponent = null;
   const searchParams = useSearchParams();
-  const title = searchParams.get('title') || data.acf.hero_section.subtitle;
+  const rawKeyword = searchParams.get('keyword') || '';
 
-  useEffect(() => {
-    document.title = title;
-  }, [title]);
+  const keyword = useMemo(() => {
+    if (isValidKeyword(rawKeyword)) {
+      return rawKeyword.trim();
+    }
+    return data.acf.hero_section.subtitle || 'Get a Quote';
+  }, [rawKeyword]);
+
+ useEffect(() => {
+    document.title = keyword;
+  }, [keyword]);
+
   // if (data.acf.hero_section.show_video) {
   //   if (data.acf.hero_section?.video_options === "enter_youtube_id") {
   //     if (data.acf.hero_section.youtube_id) {
@@ -47,8 +67,8 @@ export default function GetQuotePage({ data, websitePackageOffer, heroUSP }) {
       <Section>
         <Container maxWidth="lg" className="container">
           <div className="content-container">
-            <Typography variant="h4" component="h1" className="subtitle">
-              {title}
+            <Typography variant="h4" component="h1" className="subtitle" style={{textTransform: "capitalize"}}>
+              {keyword}
             </Typography>
             <Typography
               variant="body1"
